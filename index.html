@@ -94,28 +94,23 @@ footer{padding:4px!important;font-size:6px!important}
 </main><footer>© 2026 洗思特自助洗衣｜SISTER 加盟總部</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
 const ids=['q22','q27','qd','w12','w16','w22','install','cash','receiver','vendor','iotinstall','router','water','gas','duct','decor'];const n=id=>Math.max(0,Number(document.getElementById(id).value)||0),money=x=>'NT$ '+Math.round(x).toLocaleString('zh-TW');
 async function downloadPDF(){
-  const btn=document.querySelector('.btn.print');
-  const old=btn.textContent;
-  btn.textContent='PDF 產生中…'; btn.disabled=true;
-  try{
-    const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
-    document.body.classList.add('pdf-export');
-    await new Promise(r=>setTimeout(r,100));
-    const target=document.querySelector('main');
-    const canvas=await html2canvas(target,{scale:1.5,useCORS:true,backgroundColor:'#fff',scrollY:0});
-    const img=canvas.toDataURL('image/jpeg',0.96);
-    const pdf=new jspdf.jsPDF('p','mm','a4');
-    const pw=210,ph=297,m=4,maxW=pw-m*2,maxH=ph-m*2;
-    const scale=Math.min(maxW/canvas.width,maxH/canvas.height);
-    const w=canvas.width*scale,h=canvas.height*scale;
-    pdf.addImage(img,'JPEG',(pw-w)/2,m,w,h,undefined,'FAST');
-    pdf.save('洗思特加盟報價單_'+name+'.pdf');
-  }catch(e){
-    console.error(e);
-    alert('PDF 產生失敗。若有廣告攔截或隱私防護，請允許此網站後重新整理。');
-  }finally{
-    document.body.classList.remove('pdf-export');btn.textContent=old;btn.disabled=false;
-  }
+ const btn=document.querySelector('.btn.print'),old=btn.textContent;
+ btn.textContent='PDF 產生中…';btn.disabled=true;
+ try{
+  if(typeof html2pdf==='undefined')throw new Error('PDF library unavailable');
+  const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
+  document.body.classList.add('pdf-export');
+  await new Promise(r=>setTimeout(r,150));
+  await html2pdf().set({
+   margin:[3,3,3,3],
+   filename:'洗思特加盟報價單_'+name+'.pdf',
+   image:{type:'jpeg',quality:.98},
+   html2canvas:{scale:1.5,useCORS:true,backgroundColor:'#fff',scrollY:0},
+   jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+   pagebreak:{mode:['css','legacy']}
+  }).from(document.querySelector('main')).save();
+ }catch(e){console.error(e);alert('PDF 元件未載入，請重新整理後再試。');}
+ finally{document.body.classList.remove('pdf-export');btn.textContent=old;btn.disabled=false;}
 }
 function calc(){q22v.textContent=n('q22');q27v.textContent=n('q27');qdv.textContent=n('qd');w12v.textContent=n('w12');w16v.textContent=n('w16');w22v.textContent=n('w22');cashv.textContent=n('cash');vendorv.textContent=n('vendor');iotinstallv.textContent=n('iotinstall');routerv.textContent=n('router');document.getElementById('install').value=n('q22')+n('q27')+n('w12')+n('w16')+n('w22');document.getElementById('receiver').value=n('q22')+n('q27')+n('w12')+n('w16')+n('w22')+n('qd')*2;const m=n('q22')*360000+n('q27')*390000+n('qd')*230000+n('w12')*150000+n('w16')*160000+n('w22')*180000+n('install')*6000;const i=n('cash')*98000+n('receiver')*1800+n('vendor')*45000+n('iotinstall')*5000+n('router')*2500;const w=n('water')+n('gas')+n('duct')+n('decor');const s=m+i+w,t=Math.round(s*.05);machines.textContent=money(m);iot.textContent=money(i);works.textContent=money(w);subtotal.textContent=money(s);tax.textContent=money(t);grand.textContent=money(s+t)}ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));quoteDate.value=new Date().toISOString().slice(0,10);const p=new URLSearchParams(location.search);if(p.has('w22kg'))q22.value=p.get('w22kg');if(p.has('w27kg'))q27.value=p.get('w27kg');if(p.has('dryer'))qd.value=p.get('dryer');calc();
 </script></body></html>
