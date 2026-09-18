@@ -251,5 +251,8 @@ document.querySelectorAll('input[type="range"]').forEach(slider=>{
  slider.addEventListener('pointerdown',()=>{if(document.activeElement&&document.activeElement!==slider)document.activeElement.blur();},{passive:true});
  slider.addEventListener('touchstart',()=>{if(document.activeElement&&document.activeElement!==slider)document.activeElement.blur();},{passive:true});
  slider.addEventListener('focus',()=>{slider.focus({preventScroll:true});});
-});quoteDate.value=new Date().toISOString().slice(0,10);const p=new URLSearchParams(location.search);if(p.has('w22kg'))q22.value=p.get('w22kg');if(p.has('w27kg'))q27.value=p.get('w27kg');if(p.has('dryer'))qd.value=p.get('dryer');calc();
+});
+const remoteFee=document.getElementById('iotRemoteFee');
+if(remoteFee){remoteFee.addEventListener('change',calc);remoteFee.addEventListener('input',calc);}
+quoteDate.value=new Date().toISOString().slice(0,10);const p=new URLSearchParams(location.search);if(p.has('w22kg'))q22.value=p.get('w22kg');if(p.has('w27kg'))q27.value=p.get('w27kg');if(p.has('dryer'))qd.value=p.get('dryer');calc();
 </script></body></html>
