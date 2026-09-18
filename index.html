@@ -137,8 +137,10 @@ input[type="range"]{touch-action:pan-y}
 
 .btn.share{margin-top:10px;background:#16a34a;color:#fff;border:0}
 .btn.share:active{transform:scale(.99)}
+.input-error{border-color:#dc2626!important;box-shadow:0 0 0 2px rgba(220,38,38,.12)!important}
+.form-error{font-size:13px;color:#dc2626;margin-top:6px;display:none}
 </style></head><body><header><div class="wrap brand"><div><h1>SISTER</h1><p>洗思特自助洗衣｜加盟專業報價系統</p></div><div class="badge">設備 × 工程 × IoT</div></div></header><main class="wrap intro">
-<div class="card"><h2>客戶資料</h2><p class="sub">建立專業加盟設備估價，可直接列印／另存 PDF。</p><div class="customer"><input placeholder="客戶姓名"><input placeholder="聯絡電話"><input placeholder="預計開店地點"><input type="date" id="quoteDate"><textarea placeholder="報價備註"></textarea></div></div>
+<div class="card"><h2>客戶資料</h2><p class="sub">建立專業加盟設備估價，可直接列印／另存 PDF。</p><div class="customer"><input id="customerName" placeholder="客戶姓名" autocomplete="name"><input id="customerPhone" placeholder="聯絡電話（例：0912345678）" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10"><input placeholder="預計開店地點"><input type="date" id="quoteDate"><textarea placeholder="報價備註"></textarea></div><div id="customerError" class="form-error"></div></div>
 <div class="card"><h2>核心設備配置</h2><p class="sub">預設標準配置：22公斤大型 3 台＋27公斤特大型 3 台。</p>
 <div class="field"><div class="row"><div><div class="name">22 公斤大型洗脫烘</div><div class="price">NT$360,000／台</div></div><div class="qty"><span id="q22v">3</span> 台</div></div><input id="q22" type="range" min="0" max="12" value="3"></div>
 <div class="field"><div class="row"><div><div class="name">27 公斤特大型洗脫烘</div><div class="price">NT$390,000／台</div></div><div class="qty"><span id="q27v">3</span> 台</div></div><input id="q27" type="range" min="0" max="12" value="3"></div>
@@ -161,7 +163,20 @@ input[type="range"]{touch-action:pan-y}
 <div class="card contact"><b>洗思特自助洗衣加盟總部</b><br>LINE ID：Long5208<br>加盟專線：<a href="tel:0908115899">0908-115-899</a><br><a href="https://line.me/ti/p/OtHSgi9biU" target="_blank">加入 LINE 免費諮詢</a><p class="note">本系統為估價與配置工具；設備、贈送項目、施工內容及最終成交價格，以正式報價單與雙方確認內容為準。</p></div>
 </main><div id="pdfSheet"></div><footer>© 2026 洗思特自助洗衣｜SISTER 加盟總部</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
 const ids=['q22','q27','qd','w12','w16','w22','install','cash','receiver','vendor','iotinstall','router','water','gas','duct','decor'];const n=id=>Math.max(0,Number(document.getElementById(id).value)||0),money=x=>'NT$ '+Math.round(x).toLocaleString('zh-TW');
+function validateCustomer(){
+ const name=document.getElementById('customerName'),phone=document.getElementById('customerPhone'),err=document.getElementById('customerError');
+ name.value=name.value.trim();
+ phone.value=phone.value.replace(/\D/g,'').slice(0,10);
+ name.classList.remove('input-error');phone.classList.remove('input-error');err.style.display='none';
+ let msg='',target=null;
+ if(!name.value){msg='請先填寫客戶姓名。';target=name;}
+ else if(!/^09\d{8}$/.test(phone.value)){msg='請輸入正確的台灣手機號碼：09 開頭，共 10 碼。';target=phone;}
+ if(msg){target.classList.add('input-error');err.textContent=msg;err.style.display='block';target.focus({preventScroll:false});target.scrollIntoView({behavior:'smooth',block:'center'});return false;}
+ return true;
+}
+document.addEventListener('input',e=>{if(e.target&&e.target.id==='customerPhone'){e.target.value=e.target.value.replace(/\D/g,'').slice(0,10);e.target.classList.remove('input-error');}if(e.target&&e.target.id==='customerName')e.target.classList.remove('input-error');});
 async function shareQuote(){
+ if(!validateCustomer())return;
  const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
  const inputs=[...document.querySelectorAll('.customer input')].map(x=>x.value||'—');
  const note=document.querySelector('.customer textarea').value||'—';
@@ -180,6 +195,7 @@ async function shareQuote(){
  }catch(e){if(e.name!=='AbortError'){try{await navigator.clipboard.writeText(msg);alert('報價內容已複製，請貼到 LINE 傳送。');}catch(_){} }}
 }
 async function downloadPDF(){
+ if(!validateCustomer())return;
  const btn=document.querySelector('.btn.print'),old=btn.textContent;
  btn.textContent='PDF 產生中…';btn.disabled=true;
  try{
