@@ -78,6 +78,24 @@ footer{padding:4px!important;font-size:6px!important}
 .pdf-export footer{margin:4px 0 0!important;padding:5px!important}
 .pdf-export .actions,.pdf-export .no-print{display:none!important}
 .pdf-export *{break-inside:avoid!important;page-break-inside:avoid!important}
+
+/* PDF v3: wide two-column composition; remove wasteful vertical whitespace */
+.pdf-export main{font-size:10px!important}
+.pdf-export .hero{display:flex!important;align-items:center!important;justify-content:space-between!important}
+.pdf-export .section,.pdf-export section,.pdf-export .card{padding:5px 9px!important;margin:3px 0!important}
+.pdf-export .section-title,.pdf-export h2{font-size:15px!important}
+.pdf-export h3,.pdf-export h4{font-size:12px!important;white-space:nowrap!important}
+.pdf-export .equipment-item,.pdf-export .setting-item,.pdf-export .iot-row{min-width:0!important}
+.pdf-export .equipment-item>*:first-child,.pdf-export .setting-name,.pdf-export .iot-row>div:first-child{min-width:0!important}
+.pdf-export .equipment-item strong,.pdf-export .setting-name,.pdf-export .iot-row strong{white-space:nowrap!important;font-size:10.5px!important}
+.pdf-export .equipment-grid,.pdf-export .option-grid,.pdf-export .cost-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.pdf-export .iot-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;column-gap:12px!important;row-gap:0!important}
+.pdf-export .iot-row{display:grid!important;grid-template-columns:minmax(0,1fr) 120px!important;align-items:center!important;gap:5px!important}
+.pdf-export .iot-row input[type=range]{width:82px!important;min-width:82px!important}
+.pdf-export .iot-row input[type=number]{width:58px!important}
+.pdf-export .customer{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.pdf-export .quote-summary{margin-top:3px!important}
+.pdf-export footer{font-size:8px!important}
 </style><style>
 .pdf-export{background:#fff!important}
 .pdf-export footer,.pdf-export .no-print{display:none!important}
