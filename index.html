@@ -99,14 +99,18 @@ async function downloadPDF(){
   try{
     const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
     document.body.classList.add('pdf-export');
-    await html2pdf().set({
-      margin:[3,3,3,3],
-      filename:'洗思特加盟報價單_'+name+'.pdf',
-      image:{type:'jpeg',quality:0.98},
-      html2canvas:{scale:2,useCORS:true,scrollY:0},
-      jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-      pagebreak:{mode:['avoid-all','css','legacy']}
-    }).from(document.body).save();
+    await new Promise(r=>setTimeout(r,120));
+    const target=document.querySelector('main');
+    const canvas=await html2canvas(target,{scale:2,useCORS:true,backgroundColor:'#ffffff',scrollY:0});
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pageW=210,pageH=297,margin=4;
+    const maxW=pageW-margin*2,maxH=pageH-margin*2;
+    const ratio=Math.min(maxW/canvas.width,maxH/canvas.height);
+    const w=canvas.width*ratio,h=canvas.height*ratio;
+    const x=(pageW-w)/2,y=margin;
+    pdf.addImage(canvas.toDataURL('image/jpeg',0.96),'JPEG',x,y,w,h,undefined,'FAST');
+    pdf.save('洗思特加盟報價單_'+name+'.pdf');
   }finally{document.body.classList.remove('pdf-export');btn.textContent=old;btn.disabled=false}
 }
 function calc(){q22v.textContent=n('q22');q27v.textContent=n('q27');qdv.textContent=n('qd');w12v.textContent=n('w12');w16v.textContent=n('w16');w22v.textContent=n('w22');cashv.textContent=n('cash');vendorv.textContent=n('vendor');iotinstallv.textContent=n('iotinstall');routerv.textContent=n('router');document.getElementById('install').value=n('q22')+n('q27')+n('w12')+n('w16')+n('w22');document.getElementById('receiver').value=n('q22')+n('q27')+n('w12')+n('w16')+n('w22')+n('qd')*2;const m=n('q22')*360000+n('q27')*390000+n('qd')*230000+n('w12')*150000+n('w16')*160000+n('w22')*180000+n('install')*6000;const i=n('cash')*98000+n('receiver')*1800+n('vendor')*45000+n('iotinstall')*5000+n('router')*2500;const w=n('water')+n('gas')+n('duct')+n('decor');const s=m+i+w,t=Math.round(s*.05);machines.textContent=money(m);iot.textContent=money(i);works.textContent=money(w);subtotal.textContent=money(s);tax.textContent=money(t);grand.textContent=money(s+t)}ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));quoteDate.value=new Date().toISOString().slice(0,10);const p=new URLSearchParams(location.search);if(p.has('w22kg'))q22.value=p.get('w22kg');if(p.has('w27kg'))q27.value=p.get('w27kg');if(p.has('dryer'))qd.value=p.get('dryer');calc();
