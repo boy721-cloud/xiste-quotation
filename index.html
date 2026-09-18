@@ -133,7 +133,8 @@ footer{padding:4px!important;font-size:6px!important}
 #pdfSheet table{font-variant-numeric:tabular-nums}
 
 /* Mobile slider focus fix */
-input[type="range"]{touch-action:pan-y}
+input[type="range"]{touch-action:pan-y;margin-left:0;margin-right:0;width:100%;box-sizing:border-box}
+.optional .row input[type="range"],.iot-item .row input[type="range"]{flex:1;min-width:0}
 
 .btn.share{margin-top:10px;background:#16a34a;color:#fff;border:0}
 .btn.share:active{transform:scale(.99)}
