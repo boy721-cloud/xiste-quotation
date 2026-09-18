@@ -269,7 +269,7 @@ input[type="range"]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;b
 .pdf-export #pdfSheet .sec{color:#101828!important}
 .pdf-export #pdfSheet .laundry-sec{color:#ffffff!important}
 </style></head><body><header><div class="wrap brand"><div><h1>SISTER</h1><p>洗思特自助洗衣｜加盟專業報價系統</p></div><div class="badge">設備 × 工程 × IoT</div></div></header><main class="wrap intro">
-<div class="card"><h2>客戶資料</h2><p class="sub">建立專業加盟設備估價，可直接列印／另存 PDF。</p><div class="customer"><input id="customerName" placeholder="客戶姓名" autocomplete="name"><input id="customerPhone" placeholder="聯絡電話（例：0912345678）" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10"><select id="citySelect" aria-label="預計開店縣市"><option value="">請選擇縣市</option></select><select id="districtSelect" aria-label="預計開店區域" disabled><option value="">請先選擇縣市</option></select><input type="date" id="quoteDate"><textarea placeholder="報價備註"></textarea></div><div id="customerError" class="form-error"></div></div>
+<div class="card"><h2>客戶資料</h2><p class="sub">建立專業加盟設備估價，可直接列印／另存 PDF。</p><div class="customer"><input id="customerName" placeholder="客戶姓名" autocomplete="name"><input id="customerPhone" placeholder="聯絡電話（例：0912345678）" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10"><select id="citySelect" aria-label="預計開店縣市"><option value="">請選擇縣市</option></select><select id="districtSelect" aria-label="預計開店區域" disabled><option value="">請先選擇縣市</option></select><input id="roadInput" placeholder="路／街道（例：中山路）" autocomplete="street-address"><input id="addressNoInput" placeholder="門牌號碼（例：168號）" inputmode="text"><input type="date" id="quoteDate"><textarea placeholder="報價備註"></textarea></div><div id="customerError" class="form-error"></div></div>
 <div class="card"><h2>核心設備配置</h2><p class="sub">預設標準配置：22公斤大型 3 台＋27公斤特大型 3 台。</p>
 <div class="field"><div class="row"><div><div class="name">22 公斤大型洗脫烘</div><div class="price">NT$360,000／台</div></div><div class="qty"><span id="q22v">3</span> 台</div></div><input id="q22" type="range" min="0" max="12" value="3"></div>
 <div class="field"><div class="row"><div><div class="name">27 公斤特大型洗脫烘</div><div class="price">NT$390,000／台</div></div><div class="qty"><span id="q27v">3</span> 台</div></div><input id="q27" type="range" min="0" max="12" value="3"></div>
@@ -324,7 +324,7 @@ const taiwanAreas={
 const citySelect=document.getElementById('citySelect'),districtSelect=document.getElementById('districtSelect');
 Object.keys(taiwanAreas).forEach(city=>citySelect.add(new Option(city,city)));
 citySelect.addEventListener('change',()=>{districtSelect.innerHTML='<option value="">請選擇區／鄉／鎮／市</option>';const areas=taiwanAreas[citySelect.value]||[];areas.forEach(a=>districtSelect.add(new Option(a,a)));districtSelect.disabled=!areas.length;});
-const getLocation=()=>citySelect.value+(districtSelect.value||'');
+const getLocation=()=>{const road=(document.getElementById('roadInput')?.value||'').trim();let no=(document.getElementById('addressNoInput')?.value||'').trim();if(no&&/^\d+[\d\-之]*$/.test(no))no+='號';return citySelect.value+(districtSelect.value||'')+road+no;};
 const ids=['q22','q27','qd','w12','w16','w22','install','cash','receiver','vendor','iotinstall','router','water','gas','duct','decor'];const n=id=>Math.max(0,Number(document.getElementById(id).value)||0),money=x=>'NT$ '+Math.round(x).toLocaleString('zh-TW');
 function validateCustomer(){
  const name=document.getElementById('customerName'),phone=document.getElementById('customerPhone'),err=document.getElementById('customerError');
