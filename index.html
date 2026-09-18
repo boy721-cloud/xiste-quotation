@@ -53,6 +53,31 @@ footer{padding:4px!important;font-size:6px!important}
   main,.container,.wrap{margin-bottom:0!important;padding-bottom:0!important}
   .contact{margin-bottom:0!important}
 }
+
+/* PDF export: force the quotation onto one A4 page without changing mobile UI */
+.pdf-export main{
+  width:794px!important;
+  max-width:794px!important;
+  margin:0!important;
+  padding:10px!important;
+  transform:none!important;
+}
+.pdf-export .hero{padding:10px 16px!important;min-height:0!important}
+.pdf-export .hero h1,.pdf-export .brand{margin:0!important}
+.pdf-export .section,.pdf-export section,.pdf-export .card{
+  margin:5px 0!important;padding:8px 12px!important;
+}
+.pdf-export h2,.pdf-export h3,.pdf-export h4{margin:2px 0 4px!important;line-height:1.15!important}
+.pdf-export p{margin:2px 0!important;line-height:1.25!important}
+.pdf-export .customer,.pdf-export .grid,.pdf-export .option-grid,.pdf-export .cost-grid{gap:5px!important}
+.pdf-export input,.pdf-export textarea,.pdf-export select{min-height:26px!important;height:26px!important;padding:3px 7px!important}
+.pdf-export textarea{height:32px!important;min-height:32px!important}
+.pdf-export .setting-item,.pdf-export .equipment-item,.pdf-export .iot-row{padding:5px 7px!important;margin:2px 0!important;min-height:0!important}
+.pdf-export input[type=range]{height:14px!important}
+.pdf-export .quote-summary{padding:8px 12px!important}
+.pdf-export footer{margin:4px 0 0!important;padding:5px!important}
+.pdf-export .actions,.pdf-export .no-print{display:none!important}
+.pdf-export *{break-inside:avoid!important;page-break-inside:avoid!important}
 </style><style>
 .pdf-export{background:#fff!important}
 .pdf-export footer,.pdf-export .no-print{display:none!important}
@@ -102,10 +127,10 @@ async function downloadPDF(){
   document.body.classList.add('pdf-export');
   await new Promise(r=>setTimeout(r,150));
   await html2pdf().set({
-   margin:[3,3,3,3],
+   margin:[1,1,1,1],
    filename:'洗思特加盟報價單_'+name+'.pdf',
    image:{type:'jpeg',quality:.98},
-   html2canvas:{scale:1.5,useCORS:true,backgroundColor:'#fff',scrollY:0},
+   html2canvas:{scale:1.25,useCORS:true,backgroundColor:'#fff',scrollY:0},
    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
    pagebreak:{mode:['css','legacy']}
   }).from(document.querySelector('main')).save();
