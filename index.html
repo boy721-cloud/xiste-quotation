@@ -295,7 +295,7 @@ input[type="range"]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;b
 <p class="cost-small">本說明用於提高報價透明度，不代表所有工程均由同一廠商承作，也不取代正式工程報價、訂購文件或加盟合約。實際付款方式、施工責任、保固及其他權利義務，以雙方最終簽署文件為準。</p>
 </div></details><div class="optional">
 <div class="mini"><b>水電工程</b><div class="price">每格 NT$5,000</div><div class="row"><input id="water" type="range" min="0" max="1000000" step="5000" value="0"><span class="qty"><span id="waterv">NT$0</span></span></div></div><div class="mini"><b>天然氣工程</b><div class="price">每格 NT$5,000</div><div class="row"><input id="gas" type="range" min="0" max="1000000" step="5000" value="0"><span class="qty"><span id="gasv">NT$0</span></span></div></div><div class="mini"><b>排風工程</b><div class="price">每格 NT$5,000</div><div class="row"><input id="duct" type="range" min="0" max="1000000" step="5000" value="0"><span class="qty"><span id="ductv">NT$0</span></span></div></div><div class="mini"><b>裝潢／廣告</b><div class="price">每格 NT$5,000</div><div class="row"><input id="decor" type="range" min="0" max="1000000" step="5000" value="0"><span class="qty"><span id="decorv">NT$0</span></span></div></div></div></div>
-<div class="card summary"><h2>報價總覽</h2><div class="sumrow"><span>洗衣設備</span><b id="machines"></b></div><div class="sumrow"><span>IoT 系統</span><b id="iot"></b></div><div class="sumrow"><span>工程／其他</span><b id="works"></b></div><div class="sumrow"><span>未稅小計</span><b id="subtotal"></b></div><div class="sumrow"><span>營業稅 5%</span><b id="tax"></b></div><div style="padding-top:16px"><div>含稅總金額</div><div class="grand" id="grand"></div></div><div class="actions no-print" style="margin-top:20px"><a class="btn line" href="https://line.me/ti/p/OtHSgi9biU" target="_blank">LINE 一對一諮詢</a><button class="btn print" onclick="downloadPDF()">直接下載 PDF</button>
+<div class="card summary"><h2>報價總覽</h2><div class="sumrow"><span>洗衣設備</span><b id="machines"></b></div><div class="sumrow"><span>IoT 系統</span><b id="iot"></b></div><div class="sumrow"><span>工程／其他</span><b id="works"></b></div><div class="sumrow"><span>未稅小計</span><b id="subtotal"></b></div><div class="sumrow"><span>營業稅 5%</span><b id="tax"></b></div><div style="padding-top:16px"><div>含稅總金額</div><div class="grand" id="grand"></div></div><div class="actions no-print" style="margin-top:20px"><a class="btn line" href="https://line.me/ti/p/OtHSgi9biU" target="_blank">LINE 一對一諮詢</a><button class="btn print" onclick="downloadPDF()">直接下載 PDF</button><button class="btn png" onclick="downloadPNG()">一鍵下載 PNG</button>
 <button class="btn share" onclick="shareQuote()">一鍵分享報價</button></div></div>
 <div class="card contact"><b>洗思特自助洗衣加盟總部</b><br>LINE ID：Long5208<br>加盟專線：<a href="tel:0908115899">0908-115-899</a><br><a href="https://line.me/ti/p/OtHSgi9biU" target="_blank">加入 LINE 免費諮詢</a><p class="note">本系統為估價與配置工具；設備、贈送項目、施工內容及最終成交價格，以正式報價單與雙方確認內容為準。</p></div>
 </main><div id="pdfSheet"></div><footer>© 2026 洗思特自助洗衣｜SISTER 加盟總部</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
@@ -356,6 +356,32 @@ async function downloadPDF(){
  }catch(e){console.error(e);alert('PDF 產生失敗，請重新整理後再試。');}
  finally{document.body.classList.remove('pdf-export');btn.textContent=old;btn.disabled=false;}
 }
+
+async function downloadPNG(){
+ if(!validateCustomer())return;
+ const btn=document.querySelector('.btn.png'),old=btn.textContent;
+ btn.textContent='PNG 產生中…';btn.disabled=true;
+ try{
+  const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
+  // Reuse the exact quotation sheet builder, but intercept PDF save after the sheet is built.
+  const pdfBtn=document.querySelector('.btn.print');
+  const oldHtml2pdf=window.html2pdf;
+  let built=false;
+  window.html2pdf=function(){return {set(){return this},from(){built=true;return this},save(){return Promise.resolve()}}};
+  await downloadPDF();
+  window.html2pdf=oldHtml2pdf;
+  if(!built)throw new Error('quotation sheet unavailable');
+  document.body.classList.add('pdf-export');
+  await new Promise(r=>setTimeout(r,120));
+  const sheet=document.getElementById('pdfSheet');
+  const canvas=await html2canvas(sheet,{scale:5,useCORS:true,backgroundColor:'#fff',letterRendering:true,logging:false});
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',1));
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='洗思特加盟報價單_'+name+'.png';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+ }catch(e){console.error(e);alert('PNG 產生失敗，請重新整理後再試。');}
+ finally{document.body.classList.remove('pdf-export');btn.textContent=old;btn.disabled=false;}
+}
+
 function calc(){q22v.textContent=n('q22');q27v.textContent=n('q27');qdv.textContent=n('qd');w12v.textContent=n('w12');w16v.textContent=n('w16');w22v.textContent=n('w22');['water','gas','duct','decor'].forEach(id=>{const el=document.getElementById(id+'v');if(el)el.textContent=money(n(id));});const iotInstallTotal=document.getElementById('iotInstallTotal');if(iotInstallTotal)iotInstallTotal.textContent=money(document.getElementById('iotRemoteFee')?.checked?6000:5000);cashv.textContent=n('cash');vendorv.textContent=n('vendor');document.getElementById('install').value=n('q22')+n('q27')+n('w12')+n('w16')+n('w22');document.getElementById('receiver').value=n('q22')+n('q27')+n('w12')+n('w16')+n('w22')+n('qd')*2;const m=n('q22')*360000+n('q27')*390000+n('qd')*230000+n('w12')*150000+n('w16')*160000+n('w22')*180000+n('install')*6000;const i=n('cash')*98000+n('receiver')*1800+n('vendor')*45000+n('iotinstall')*(document.getElementById('iotRemoteFee')?.checked?6000:5000)+n('router')*2500;const w=n('water')+n('gas')+n('duct')+n('decor');const s=m+i+w,t=Math.round(s*.05);machines.textContent=money(m);iot.textContent=money(i);works.textContent=money(w);subtotal.textContent=money(s);tax.textContent=money(t);grand.textContent=money(s+t)}ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
 document.querySelectorAll('input[type="range"]').forEach(slider=>{
  slider.addEventListener('pointerdown',()=>{if(document.activeElement&&document.activeElement!==slider)document.activeElement.blur();},{passive:true});
