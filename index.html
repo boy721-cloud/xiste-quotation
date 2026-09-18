@@ -232,6 +232,18 @@ input[type="range"]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;b
  background:#f0eee9!important;border:0!important;border-radius:0!important;padding:11px 13px!important;margin-top:16px!important;
  color:#5f5a52!important;font-size:7.8px!important;line-height:1.65!important;text-align:left!important;
 }
+
+/* PDF readability correction */
+.pdf-export #pdfSheet{color:#0b1830!important;font-weight:500!important}
+.pdf-export #pdfSheet h1,
+.pdf-export #pdfSheet b,
+.pdf-export #pdfSheet td,
+.pdf-export #pdfSheet .sec{color:#08162d!important}
+.pdf-export #pdfSheet th{color:#24344d!important;font-weight:800!important}
+.pdf-export #pdfSheet td{font-size:10.5px!important;font-weight:600!important}
+.pdf-export #pdfSheet .meta{color:#27364c!important;font-size:9.5px!important;font-weight:600!important}
+.pdf-export #pdfSheet .foot{color:#344054!important;font-size:8.2px!important;font-weight:500!important}
+.pdf-export #pdfSheet .total{color:#8a6200!important;font-weight:900!important}
 </style></head><body><header><div class="wrap brand"><div><h1>SISTER</h1><p>洗思特自助洗衣｜加盟專業報價系統</p></div><div class="badge">設備 × 工程 × IoT</div></div></header><main class="wrap intro">
 <div class="card"><h2>客戶資料</h2><p class="sub">建立專業加盟設備估價，可直接列印／另存 PDF。</p><div class="customer"><input id="customerName" placeholder="客戶姓名" autocomplete="name"><input id="customerPhone" placeholder="聯絡電話（例：0912345678）" type="tel" inputmode="numeric" autocomplete="tel" maxlength="10"><input placeholder="預計開店地點"><input type="date" id="quoteDate"><textarea placeholder="報價備註"></textarea></div><div id="customerError" class="form-error"></div></div>
 <div class="card"><h2>核心設備配置</h2><p class="sub">預設標準配置：22公斤大型 3 台＋27公斤特大型 3 台。</p>
