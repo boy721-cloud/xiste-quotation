@@ -160,18 +160,18 @@ async function downloadPDF(){
  try{
   if(typeof html2pdf==='undefined')throw new Error('PDF library unavailable');
   const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
-  const customer=[...document.querySelectorAll('.customer input')].map(x=>x.value||'—');
+  const customer=[...document.querySelectorAll('.customer input')].map(x=>x.value||'—'); const issue=customer[3]&&customer[3]!=='—'?new Date(customer[3]+'T00:00:00'):new Date(); const valid=new Date(issue); valid.setDate(valid.getDate()+14); const validText=valid.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
   const note=document.querySelector('.customer textarea').value||'—';
   const rows=(arr)=>arr.filter(x=>x[1]>0).map(x=>'<tr><td>'+x[0]+'</td><td class="num">'+money(x[2])+'</td><td class="num">'+x[1]+'</td><td class="num">'+money(x[1]*x[2])+'</td></tr>').join('');
   const equip=[['22 公斤大型洗脫烘',n('q22'),360000],['27 公斤特大型洗脫烘',n('q27'),390000],['16 公斤雙層烘衣機',n('qd'),230000],['12kg 獨立洗衣機',n('w12'),150000],['16kg 獨立洗衣機',n('w16'),160000],['22kg 獨立洗衣機',n('w22'),180000],['定位安裝調校',n('install'),6000]];
   const iotRows=[['落地款兌幣儲值機系統',n('cash'),98000],['物聯網設備接收器',n('receiver'),1800],['物聯網設備販賣機',n('vendor'),45000],['物聯網系統整合安裝與測試',n('iotinstall'),5000],['雙頻網路閘道器',n('router'),2500]];
   const work=[['水電工程',n('water')],['天然氣工程',n('gas')],['排風工程',n('duct')],['裝潢／廣告',n('decor')]].filter(x=>x[1]>0).map(x=>'<tr><td>'+x[0]+'</td><td colspan="2"></td><td class="num">'+money(x[1])+'</td></tr>').join('');
-  document.getElementById('pdfSheet').innerHTML='<div class="pdf-head"><div><h1>SISTER 洗思特</h1><b>自助洗衣加盟設備報價單</b></div><div class="meta">客戶：'+customer[0]+'　電話：'+customer[1]+'<br>地點：'+customer[2]+'　日期：'+customer[3]+'<br>備註：'+note+'</div></div>'+
+  document.getElementById('pdfSheet').innerHTML='<div class="pdf-head"><div><h1>SISTER 洗思特</h1><b>自助洗衣加盟設備報價單</b></div><div class="meta">客戶：'+customer[0]+'　電話：'+customer[1]+'<br>地點：'+customer[2]+'　報價日期：'+customer[3]+'<br><b>報價有效期限：'+validText+'</b>　備註：'+note+'</div></div>'+
   '<table><tr><td class="sec" colspan="4">洗衣設備</td></tr><tr><th>品名</th><th class="num">單價</th><th class="num">數量</th><th class="num">小計</th></tr>'+rows(equip)+
   '<tr><td class="sec" colspan="4">GOAL IoT 物聯網＋AI 儲值系統</td></tr>'+rows(iotRows)+
   '<tr><td class="sec" colspan="4">其他建置費用</td></tr>'+work+
   '<tr><td colspan="3">未稅小計</td><td class="num">'+subtotal.textContent+'</td></tr><tr><td colspan="3">營業稅 5%</td><td class="num">'+tax.textContent+'</td></tr><tr><td colspan="3"><b>含稅總金額</b></td><td class="num total">'+grand.textContent+'</td></tr></table>'+
-  '<div class="foot"><b>洗思特自助洗衣加盟總部</b>　LINE ID：Long5208　加盟專線：0908-115-899<br>本報價為估價與配置參考；設備、贈送項目、施工內容及最終成交價格，以正式報價單與雙方確認內容為準。</div>';
+  '<div class="foot"><b>洗思特自助洗衣加盟總部</b>　LINE ID：Long5208　加盟專線：0908-115-899<br>本報價自報價日起 14 日內有效，逾期價格、優惠及供貨條件須重新確認。報價內容係依目前選配與已知條件估算；實際設備規格、數量、贈送項目、施工範圍、運送安裝、現場追加工程及最終成交條件，以雙方最終簽署之正式報價單、訂購文件或加盟合約為準。因現場條件、原物料／設備成本、法令或第三方費用變動所生之必要調整，應另行確認。未經書面確認之口頭承諾、預估營收、獲利或回本期間，均不構成保證。</div>';
   document.body.classList.add('pdf-export');
   await new Promise(r=>setTimeout(r,100));
   await html2pdf().set({margin:[5,5,5,5],filename:'洗思特加盟報價單_'+name+'.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:1.5,useCORS:true,backgroundColor:'#fff'},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all']}}).from(document.getElementById('pdfSheet')).save();
