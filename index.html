@@ -317,19 +317,27 @@ async function shareQuote(){
  const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
  const inputs=[...document.querySelectorAll('.customer input')].map(x=>x.value||'—');
  const note=document.querySelector('.customer textarea').value||'—';
+ const issue=inputs[3]&&inputs[3]!=='—'?new Date(inputs[3]+'T00:00:00'):new Date(),valid=new Date(issue);valid.setDate(valid.getDate()+14);
+ const validText=valid.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
+ const remote=document.getElementById('iotRemoteFee')?.checked;
  const items=[
-  ['22kg大型洗脫烘',n('q22')],['27kg特大型洗脫烘',n('q27')],['16kg雙層烘衣機',n('qd')],
-  ['12kg獨立洗衣機',n('w12')],['16kg獨立洗衣機',n('w16')],['22kg獨立洗衣機',n('w22')],
-  ['落地款兌幣儲值機',n('cash')],['IoT設備販賣機',n('vendor')]
- ].filter(x=>x[1]>0).map(x=>x[0]+' × '+x[1]).join('\n');
- const msg='【洗思特自助洗衣加盟報價】\n客戶：'+name+
-  '\n電話：'+inputs[1]+'\n預計開店地點：'+inputs[2]+'\n\n設備配置：\n'+items+
-  '\n\n含稅總金額：'+grand.textContent+'\n備註：'+note+
-  '\n\n洗思特自助洗衣加盟總部\nLINE ID：Long5208\n加盟專線：0908-115-899';
+  ['22kg 大型洗脫烘',n('q22'),'台'],['27kg 特大型洗脫烘',n('q27'),'台'],['16kg 雙層烘衣機',n('qd'),'組'],
+  ['12kg 獨立洗衣機',n('w12'),'台'],['16kg 獨立洗衣機',n('w16'),'台'],['22kg 獨立洗衣機',n('w22'),'台'],
+  ['定位安裝調校',n('install'),'台'],['落地款兌幣儲值機系統',n('cash'),'台'],['物聯網設備接收器',n('receiver'),'台'],
+  ['物聯網設備販賣機',n('vendor'),'台'],['物聯網系統整合安裝與測試',n('iotinstall'),'式'],['雙頻網路閘道器',n('router'),'台']
+ ].filter(x=>x[1]>0).map(x=>'・'+x[0]+'｜'+x[1]+' '+x[2]).join('\n');
+ const works=[['水電工程',n('water')],['天然氣工程',n('gas')],['排風工程',n('duct')],['裝潢／廣告',n('decor')]].filter(x=>x[1]>0).map(x=>'・'+x[0]+'｜'+money(x[1])).join('\n');
+ const msg='【SISTER 洗思特｜加盟設備報價摘要】\n\n'+
+  '▌客戶資料\n客戶姓名｜'+name+'\n聯絡電話｜'+inputs[1]+'\n預計開店地點｜'+(inputs[2]==='—'?'尚未提供':inputs[2])+'\n報價日期｜'+inputs[3]+'\n有效期限｜'+validText+'\n\n'+
+  '▌設備配置\n'+items+(remote?'\n・偏遠地區安裝工資加價｜NT$ 1,000':'')+
+  (works?'\n\n▌工程／其他費用\n'+works:'')+'\n\n'+
+  '▌報價金額\n未稅小計｜'+subtotal.textContent+'\n營業稅 5%｜'+tax.textContent+'\n含稅總金額｜'+grand.textContent+'\n\n'+
+  '▌報價備註\n'+note+'\n\n'+
+  '────────────────\n洗思特自助洗衣加盟總部\nLINE ID｜Long5208\n加盟專線｜0908-115-899\n\n※ 本報價自報價日起 14 日內有效；設備規格、施工內容及最終成交條件，以雙方正式確認文件為準。';
  try{
-  if(navigator.share){await navigator.share({title:'洗思特加盟報價｜'+name,text:msg});}
-  else{await navigator.clipboard.writeText(msg);alert('報價內容已複製，請貼到 LINE 傳送。');}
- }catch(e){if(e.name!=='AbortError'){try{await navigator.clipboard.writeText(msg);alert('報價內容已複製，請貼到 LINE 傳送。');}catch(_){} }}
+  if(navigator.share){await navigator.share({title:'洗思特加盟設備報價摘要｜'+name,text:msg});}
+  else{await navigator.clipboard.writeText(msg);alert('正式報價摘要已複製，可直接貼到 LINE。');}
+ }catch(e){if(e.name!=='AbortError'){try{await navigator.clipboard.writeText(msg);alert('正式報價摘要已複製，可直接貼到 LINE。');}catch(_){} }}
 }
 async function downloadPDF(){
  if(!validateCustomer())return;
