@@ -352,7 +352,7 @@ async function downloadPDF(){
   '<div class="foot"><b>洗思特自助洗衣加盟總部</b>　LINE ID：Long5208　加盟專線：0908-115-899<br>本報價自報價日起 14 日內有效，逾期價格、優惠及供貨條件須重新確認。報價內容係依目前選配與已知條件估算；實際設備規格、數量、贈送項目、施工範圍、運送安裝、現場追加工程及最終成交條件，以雙方最終簽署之正式報價單、訂購文件或加盟合約為準。因現場條件、原物料／設備成本、法令或第三方費用變動所生之必要調整，應另行確認。未經書面確認之口頭承諾、預估營收、獲利或回本期間，均不構成保證。</div>';
   document.body.classList.add('pdf-export');
   await new Promise(r=>setTimeout(r,100));
-  await html2pdf().set({margin:[5,5,5,5],filename:'洗思特加盟報價單_'+name+'.pdf',image:{type:'png',quality:1},html2canvas:{scale:3,useCORS:true,backgroundColor:'#fff',letterRendering:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all']}}).from(document.getElementById('pdfSheet')).save();
+  await html2pdf().set({margin:[5,5,5,5],filename:'洗思特加盟報價單_'+name+'.pdf',image:{type:'png',quality:1},html2canvas:{scale:5,useCORS:true,backgroundColor:'#fff',letterRendering:true,logging:false},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},pagebreak:{mode:['avoid-all']}}).from(document.getElementById('pdfSheet')).save();
  }catch(e){console.error(e);alert('PDF 產生失敗，請重新整理後再試。');}
  finally{document.body.classList.remove('pdf-export');btn.textContent=old;btn.disabled=false;}
 }
