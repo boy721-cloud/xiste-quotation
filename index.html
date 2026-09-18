@@ -127,6 +127,10 @@ footer{padding:4px!important;font-size:6px!important}
 .pdf-export #pdfSheet .num{text-align:right}
 .pdf-export #pdfSheet .total{font-size:16px;font-weight:900;color:#a67618}
 .pdf-export #pdfSheet .foot{text-align:center;font-size:8px;line-height:1.45;margin-top:6px}
+
+.pdf-export header,.pdf-export main,.pdf-export footer{display:none!important}
+.pdf-export #pdfSheet{display:block!important;position:static!important;margin:0 auto!important}
+#pdfSheet table{font-variant-numeric:tabular-nums}
 </style></head><body><header><div class="wrap brand"><div><h1>SISTER</h1><p>洗思特自助洗衣｜加盟專業報價系統</p></div><div class="badge">設備 × 工程 × IoT</div></div></header><main class="wrap intro">
 <div class="card"><h2>客戶資料</h2><p class="sub">建立專業加盟設備估價，可直接列印／另存 PDF。</p><div class="customer"><input placeholder="客戶姓名"><input placeholder="聯絡電話"><input placeholder="預計開店地點"><input type="date" id="quoteDate"><textarea placeholder="報價備註"></textarea></div></div>
 <div class="card"><h2>核心設備配置</h2><p class="sub">預設標準配置：22公斤大型 3 台＋27公斤特大型 3 台。</p>
@@ -148,7 +152,7 @@ footer{padding:4px!important;font-size:6px!important}
 <div class="mini"><b>水電工程</b><input id="water" type="number" min="0" value="0"></div><div class="mini"><b>天然氣工程</b><input id="gas" type="number" min="0" value="0"></div><div class="mini"><b>排風工程</b><input id="duct" type="number" min="0" value="0"></div><div class="mini"><b>裝潢／廣告</b><input id="decor" type="number" min="0" value="0"></div></div></div>
 <div class="card summary"><h2>報價總覽</h2><div class="sumrow"><span>洗衣設備</span><b id="machines"></b></div><div class="sumrow"><span>IoT 系統</span><b id="iot"></b></div><div class="sumrow"><span>工程／其他</span><b id="works"></b></div><div class="sumrow"><span>未稅小計</span><b id="subtotal"></b></div><div class="sumrow"><span>營業稅 5%</span><b id="tax"></b></div><div style="padding-top:16px"><div>含稅總金額</div><div class="grand" id="grand"></div></div><div class="actions no-print" style="margin-top:20px"><a class="btn line" href="https://line.me/ti/p/OtHSgi9biU" target="_blank">LINE 一對一諮詢</a><button class="btn print" onclick="downloadPDF()">直接下載 PDF</button></div></div>
 <div class="card contact"><b>洗思特自助洗衣加盟總部</b><br>LINE ID：Long5208<br>加盟專線：<a href="tel:0908115899">0908-115-899</a><br><a href="https://line.me/ti/p/OtHSgi9biU" target="_blank">加入 LINE 免費諮詢</a><p class="note">本系統為估價與配置工具；設備、贈送項目、施工內容及最終成交價格，以正式報價單與雙方確認內容為準。</p></div>
-<div id="pdfSheet"></div></main><footer>© 2026 洗思特自助洗衣｜SISTER 加盟總部</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
+</main><div id="pdfSheet"></div><footer>© 2026 洗思特自助洗衣｜SISTER 加盟總部</footer><script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script><script>
 const ids=['q22','q27','qd','w12','w16','w22','install','cash','receiver','vendor','iotinstall','router','water','gas','duct','decor'];const n=id=>Math.max(0,Number(document.getElementById(id).value)||0),money=x=>'NT$ '+Math.round(x).toLocaleString('zh-TW');
 async function downloadPDF(){
  const btn=document.querySelector('.btn.print'),old=btn.textContent;
