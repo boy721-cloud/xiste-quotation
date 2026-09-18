@@ -317,6 +317,8 @@ async function shareQuote(){
  const name=(document.querySelector('.customer input[placeholder="客戶姓名"]').value||'客戶').trim();
  const inputs=[...document.querySelectorAll('.customer input')].map(x=>x.value||'—');
  const note=document.querySelector('.customer textarea').value||'—';
+ const rawPhone=(inputs[1]||'').replace(/\D/g,'');
+ const phoneText=/^09\d{8}$/.test(rawPhone)?rawPhone.replace(/(\d{4})(\d{3})(\d{3})/,'$1-$2-$3'):inputs[1];
  const issue=inputs[3]&&inputs[3]!=='—'?new Date(inputs[3]+'T00:00:00'):new Date(),valid=new Date(issue);valid.setDate(valid.getDate()+14);
  const validText=valid.toLocaleDateString('zh-TW',{year:'numeric',month:'2-digit',day:'2-digit'});
  const remote=document.getElementById('iotRemoteFee')?.checked;
